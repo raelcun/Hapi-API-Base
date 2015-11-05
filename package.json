@@ -1,0 +1,49 @@
+{
+  "name": "inspire-me",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raelcun/InspireMe.git"
+  },
+  "author": "Dan Taylor",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/raelcun/InspireMe/issues"
+  },
+  "homepage": "https://github.com/raelcun/InspireMe#readme",
+  "dependencies": {
+    "bluebird": "^3.0.5",
+    "boom": "^3.0.0",
+    "good": "^6.4.0",
+    "good-console": "^5.1.0",
+    "hapi": "^11.0.5",
+    "hapi-auth-jwt2": "^5.2.0",
+    "hapi-mongo-models": "^3.0.0",
+    "hapi-mongodb": "^4.0.1",
+    "joi": "^7.0.0",
+    "jsonwebtoken": "^5.4.1",
+    "lodash": "^3.10.1",
+    "mongodb": "^2.0.47",
+    "source-map-support": "^0.3.3",
+    "winston": "^2.1.0",
+    "winston-mongodb": "^1.2.0"
+  },
+  "devDependencies": {
+    "chai": "^3.4.0",
+    "gulp": "^3.9.0",
+    "gulp-coffee": "^2.3.1",
+    "gulp-coffeelint": "^0.5.0",
+    "gulp-lab": "^1.0.5",
+    "gulp-nodemon": "^2.0.4",
+    "gulp-rimraf": "^0.2.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-watch": "^4.3.5",
+    "lab": "^7.1.0",
+    "streamqueue": "^1.1.1"
+  }
+}
