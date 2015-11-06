@@ -25,6 +25,8 @@ server.ext 'onPreResponse', (request, reply) ->
 # unless token is for admin user
 ###
 server.ext 'onPreAuth', (request, reply) ->
+  if config.env is 'development' then return reply.continue() # ignore ip check for development purposes
+
   authorization = request.raw.req.headers.authorization
   parts = authorization?.split(/\s+/)
   if parts? and parts.length is 2 and parts[0].toLowerCase() is 'bearer'
