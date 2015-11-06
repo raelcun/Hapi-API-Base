@@ -4,7 +4,7 @@ hapi = require('hapi')
 config = require('./config/env')
 logger = require('./components/logger')
 util = require('./components/util')
-boom = require('./components/boom')
+boom = require('boom')
 jwt = require('jsonwebtoken')
 
 # echo admin token for testing purposes
@@ -14,8 +14,15 @@ server = new hapi.Server()
 server.connection(config.server)
 
 ###
-If authorization passed, validate host and remote ip
-unless token is for admin user
+# Make sure data in Boom messages is displayed
+###
+server.ext 'onPreResponse', (request, reply) ->
+  if request.response?.isBoom and request.response?.data then request.response.output.payload.data = request.response.data
+  return reply.continue()
+
+###
+# If authorization passed, validate host and remote ip
+# unless token is for admin user
 ###
 server.ext 'onPreAuth', (request, reply) ->
   authorization = request.raw.req.headers.authorization
@@ -55,4 +62,4 @@ server.register [
   require('./routes')(server)
 
   server.start ->
-    logger.info "web interface started at #{config.server.host}:#{config.server.port} in #{config.env} mode"
+    logger.info "web interface started at https://#{config.server.host}:#{config.server.port} in #{config.env} mode"

@@ -1,7 +1,7 @@
-winston = require 'winston'
+winston = require('winston')
 require('winston-mongodb').MongoDB
-config = require '../../config/env'
-util = require '../util'
+config = require('../config/env')
+util = require('./util')
 
 logLevel = if config.env is 'production' then 'info' else 'debug'
 

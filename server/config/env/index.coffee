@@ -1,5 +1,7 @@
-path = require 'path'
-_ = require 'lodash'
+path = require('path')
+_ = require('lodash')
+fs = require('fs')
+path = require('path')
 
 # default environment to development if environment variable doesn't exist
 process.env.NODE_ENV or= 'development'
@@ -16,6 +18,9 @@ all =
     port: process.env.PORT or 9000
     routes:
       cors: true
+    tls:
+      key: fs.readFileSync(path.join(__dirname, '../../ssl/key.pem'), 'utf8')
+      cert: fs.readFileSync(path.join(__dirname, '../../ssl/cert.pem'), 'utf8')
 
   goodOptions:
     responsePayload: true
@@ -49,4 +54,4 @@ all =
       collection: 'logs'
 
 
-module.exports = _.merge(all, require("./#{process.env.NODE_ENV}.js") or {})
+module.exports = _.merge({}, all, require("./#{process.env.NODE_ENV}.js") or {})
