@@ -8,7 +8,9 @@ boom = require('boom')
 jwt = require('jsonwebtoken')
 
 # echo admin token for testing purposes
-logger.debug(jwt.sign({ username: 'admin', scope: 'user' }, config.API.JWTSecret, { algorithm: 'HS512' }))
+if config.env is 'development'
+  logger.debug('admin token:', jwt.sign({ username: 'admin', scope: 'admin' }, config.API.JWTSecret, { algorithm: 'HS512' }))
+  logger.debug('user token:', jwt.sign({ username: 'user', scope: 'user' }, config.API.JWTSecret, { algorithm: 'HS512' }))
 
 server = new hapi.Server()
 server.connection(config.server)
@@ -65,3 +67,5 @@ server.register [
 
   server.start ->
     logger.info "web interface started at https://#{config.server.host}:#{config.server.port} in #{config.env} mode"
+
+module.exports = server

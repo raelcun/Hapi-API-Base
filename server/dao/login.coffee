@@ -11,7 +11,7 @@ module.exports =
       remoteAddress: request.info.remoteAddress
       host: request.info.host
 
-    if (username is 'admin' and password is 'admin') or (username is 'dan' and password is 'dan')
+    if (username is 'admin' and password is 'admin') or (username is 'user' and password is 'user')
       return jwt.sign(tokenPayload, config.API.JWTSecret, { expiresIn: config.API.defaultTokenExp })
     else
       return null

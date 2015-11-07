@@ -8,6 +8,7 @@ var rimraf = require('gulp-rimraf');
 var coffeelint = require('gulp-coffeelint');
 var watch = require('gulp-watch');
 var nodemon = require('gulp-nodemon');
+var lab = require('gulp-lab');
 
 gulp.task('default', ['coffee'], function() {
   nodemon({
@@ -16,7 +17,12 @@ gulp.task('default', ['coffee'], function() {
     watch: ['server'],
     tasks: ['coffee']
   });
-})
+});
+
+gulp.task('test', ['coffee'], function() {
+  return gulp.src(['server/tests/*.js', '!server/tests/common.js'])
+    .pipe(lab('-c -C -v'));
+});
 
 gulp.task('coffee', function() {
   return streamqueue({ objectMode: true },
