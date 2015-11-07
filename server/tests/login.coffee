@@ -22,6 +22,12 @@ internals.users = [
   { username: 'user', password: 'user' }
 ]
 
+internals.expectError = (payload) ->
+  expect(payload).to.exist
+  expect(payload.statusCode).to.be.a('number')
+  expect(payload.error).to.be.a('string')
+  expect(payload.message).to.be.a('string')
+
 describe 'Login', ->
 
   before (done) ->
@@ -34,7 +40,13 @@ describe 'Login', ->
     options = { method: 'POST', url: '/login', payload: { username: user.username, password: user.password } }
     internals.server.inject options, (res) ->
       payload = JSON.parse(res.payload)
-
       expect(payload.result).to.be.a('string')
+      done()
 
+  it 'invalid username', (done) ->
+    user = internals.users[1]
+    options = { method: 'POST', url: '/login', payload: { username: user.username + 'a', password: user.password } }
+    internals.server.inject options, (res) ->
+      payload = JSON.parse(res.payload)
+      internals.expectError(payload)
       done()
