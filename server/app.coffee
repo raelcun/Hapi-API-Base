@@ -8,9 +8,8 @@ boom = require('boom')
 jwt = require('jsonwebtoken')
 
 # echo admin token for testing purposes
-if config.env is 'development'
-  logger.debug('admin token:', jwt.sign({ username: 'admin', scope: 'admin' }, config.API.JWTSecret, { algorithm: 'HS512' }))
-  logger.debug('user token:', jwt.sign({ username: 'user', scope: 'user' }, config.API.JWTSecret, { algorithm: 'HS512' }))
+logger.debug('admin token:', jwt.sign({ username: 'admin', scope: 'admin' }, config.API.JWTSecret, { algorithm: 'HS512' }))
+logger.debug('user token:', jwt.sign({ username: 'user', scope: 'user' }, config.API.JWTSecret, { algorithm: 'HS512' }))
 
 server = new hapi.Server()
 server.connection(config.server)
@@ -19,7 +18,7 @@ server.connection(config.server)
 # Make sure data in Boom messages is displayed
 ###
 server.ext 'onPreResponse', (request, reply) ->
-  if request.response?.isBoom and request.response?.data then request.response.output.payload.data = request.response.data
+  if request.response.isBoom and request.response.data then request.response.output.payload.data = request.response.data
   return reply.continue()
 
 ###
@@ -27,14 +26,12 @@ server.ext 'onPreResponse', (request, reply) ->
 # unless token is for admin user
 ###
 server.ext 'onPreAuth', (request, reply) ->
-  if config.env is 'development' then return reply.continue() # ignore ip check for development purposes
-
   authorization = request.raw.req.headers.authorization
   parts = authorization?.split(/\s+/)
   if parts? and parts.length is 2 and parts[0].toLowerCase() is 'bearer'
     tokenPayload = jwt.decode(parts[1])
-    if tokenPayload?.scope isnt 'admin' and (tokenPayload?.remoteAddress isnt request.info.remoteAddress or tokenPayload?.host isnt request.info.host)
-      return reply(boom.unauthorized('Invalid token'))
+    if tokenPayload? and tokenPayload.scope isnt 'admin' and (tokenPayload.remoteAddress isnt request.info.remoteAddress or tokenPayload.host isnt request.info.host)
+      return reply(boom.unauthorized('Invalid token')) # ignore ip check unless in production
   reply.continue()
 
 server.register [
@@ -47,15 +44,13 @@ server.register [
   #     settings: config.mongo.settings.server
   # }
 ], (err) ->
-  if err then logger.error 'Error loading plugins', err, -> process.exit(0)
-
   # setup authorization strategy
   server.auth.strategy 'jwt', 'jwt', true, {
     key: config.API.JWTSecret
     verifyOptions:
       algorithms: ['HS512']
     validateFunc: (decoded, request, cb) ->
-      if decoded.username in ['dan', 'admin']
+      if decoded.username in ['user', 'admin']
         return cb(null, true, decoded)
       else
         return cb(null, false, {})

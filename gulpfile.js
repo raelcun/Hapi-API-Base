@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 var gulp = require('gulp');
 var sourcemaps = require('gulp-sourcemaps');
@@ -21,7 +21,7 @@ gulp.task('default', ['coffee'], function() {
 
 gulp.task('test', ['coffee'], function() {
   return gulp.src(['server/tests/*.js', '!server/tests/common.js'])
-    .pipe(lab('-c -C -v'));
+    .pipe(lab('-c -C -v --reporter html --output coverage'));
 });
 
 gulp.task('coffee', function() {

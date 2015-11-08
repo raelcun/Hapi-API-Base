@@ -1,5 +1,4 @@
 boom = require('boom')
-loginDAO = require('../dao/login')
 
 module.exports =
   userOnly: (request, reply) -> return reply({ result: 'user only' })

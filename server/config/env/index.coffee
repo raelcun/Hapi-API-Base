@@ -4,7 +4,7 @@ fs = require('fs')
 path = require('path')
 
 # default environment to development if environment variable doesn't exist
-process.env.NODE_ENV or= 'development'
+#process.env.NODE_ENV or= 'development'
 
 all =
   env: process.env.NODE_ENV
@@ -15,7 +15,7 @@ all =
 
   server:
     host: 'localhost'
-    port: process.env.PORT or 9000
+    port: 9000
     routes:
       cors: true
     tls:
@@ -37,8 +37,8 @@ all =
     connection:
       username: 'node'
       password: 'node'
-      hostname: 'localhost'
-      port: 27019
+      hostname: '192.168.33.10'
+      port: 27017
       database: 'inspire-me'
     settings:
       server:
@@ -48,10 +48,9 @@ all =
     logDB:
       username: 'node'
       password: 'node'
-      hostname: 'localhost'
-      port: 27019
+      hostname: '192.168.33.10'
+      port: 27017
       database: 'inspire-me'
       collection: 'logs'
 
-
-module.exports = _.merge({}, all, require("./#{process.env.NODE_ENV}.js") or {})
+module.exports = _.merge({}, all, require("./#{process.env.NODE_ENV}.js"))

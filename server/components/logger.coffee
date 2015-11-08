@@ -1,11 +1,16 @@
+config = require('../config/env')
 winston = require('winston')
 require('winston-mongodb').MongoDB
-config = require('../config/env')
 util = require('./util')
 
-logLevel = if config.env is 'production' then 'info' else 'debug'
+# turn code coverage off since all testing is done with a test environment, so these lines will never be hit during a test
+### $lab:coverage:off$ ###
+logLevel = 'debug'
+if config.env is 'production' then logLevel = 'info'
+if config.env is 'development' then logLevel = 'debug'
+if config.env is 'test' then logLevel = 'error'
 
-if config.env isnt 'testing'
+if config.env isnt 'test'
   winston.add(
     winston.transports.MongoDB,
     {
@@ -17,9 +22,10 @@ if config.env isnt 'testing'
         config.mongo.logDB.database
       )
       collection: config.mongo.logDB.collection
-      level: 'info'
+      level: logLevel
     }
   )
+### $lab:coverage:on$ ###
 
 winston.level = logLevel
 
