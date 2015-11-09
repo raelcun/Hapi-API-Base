@@ -8,6 +8,7 @@ boom = require('boom')
 jwt = require('jsonwebtoken')
 Promise = require('bluebird')
 mongoose = require('mongoose')
+User = require('./models/user')
 
 # echo admin token for testing purposes
 logger.debug('admin token:', jwt.sign({ username: 'admin', scope: 'admin' }, config.API.JWTSecret, { algorithm: 'HS512' }))
@@ -37,12 +38,13 @@ server.ext 'onPreAuth', (request, reply) ->
   reply.continue()
 
 # gracefully disconnect from db when server is killed
+# do not count in code coverage because the process can't be killed by a unit test, only by the system
+### $lab:coverage:off$ ###
 gracefulDBExit = ->
   mongoose.connection.close ->
     logger.warn 'Mongoose connection terminated due to app termination', {}, -> process.exit(0)
 process.on('SIGINT', gracefulDBExit).on('SIGTERM', gracefulDBExit)
-
-mongoose.connection.on 'disconnected', -> logger.info 'Mongoose default connection disconnected'
+### $lab:coverage:on$ ###
 
 mongoose.connection.on 'connected', ->
   server.register [
@@ -55,10 +57,13 @@ mongoose.connection.on 'connected', ->
       verifyOptions:
         algorithms: ['HS512']
       validateFunc: (decoded, request, cb) ->
-        if decoded.username in ['user', 'admin']
-          return cb(null, true, decoded)
-        else
-          return cb(null, false, {})
+        User
+          .find({ username: decoded.username, scope: decoded.scope })
+          .then (users) ->
+            if users.length is 1
+              return cb(null, true, decoded)
+            else
+              return cb(null, false, {})
     }
     server.auth.scope = ['admin', 'user']
 

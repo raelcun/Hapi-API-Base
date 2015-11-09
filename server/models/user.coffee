@@ -4,7 +4,7 @@ Promise = require('bluebird')
 util = require('../components/util')
 
 UserSchema = new mongoose.Schema
-  userScope:
+  scope:
     type: String
     required: true
   username:
@@ -14,21 +14,20 @@ UserSchema = new mongoose.Schema
     type: String
     required: true
 
-UserSchema.statics.createNewUser = (username, plainPassword, userScope = 'user') ->
+UserSchema.statics.createNewUser = (username, plainPassword, scope = 'user') ->
   newUser = new this()
   return new Promise (resolve, reject) ->
     bcrypt.genSalt 10, (err, salt) ->
-      if err then reject(err)
       bcrypt.hash plainPassword, salt, (err, hash) ->
         if err then reject(err)
         newUser.username = username
-        newUser.userScope = userScope
+        newUser.scope = scope
         newUser.passwordHash = hash
         resolve(newUser)
 
-UserSchema.statics.validatePassword = (plainPassword) ->
+UserSchema.statics.validatePassword = (plainPassword, hashedPassword) ->
   return new Promise (resolve, reject) ->
-    bcrypt.compare plainPassword, @passwordHash, (err, res) ->
+    bcrypt.compare plainPassword, hashedPassword, (err, res) ->
       if err then reject(err)
       resolve(res)
 
@@ -39,10 +38,10 @@ UserSchema
   )
 
 UserSchema
-  .path 'userScope'
+  .path 'scope'
   .validate ((value) ->
     return not util.nullOrEmpty(value)
-  ), 'userScope cannot be blank'
+  ), 'scope cannot be blank'
 
 UserSchema
   .path 'passwordHash'

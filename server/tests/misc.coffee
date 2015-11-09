@@ -47,3 +47,8 @@ describe 'Misc', ->
     database = 'db'
     expect(util.constructMongoURI(username, password, hostname, port, database)).to.equal('mongodb://username:password@hostname:80/db')
     done()
+
+  it 'nullOrEmpty', (done) ->
+    expect(util.nullOrEmpty(null)).to.equal(true)
+    expect(util.nullOrEmpty('')).to.equal(true)
+    done()

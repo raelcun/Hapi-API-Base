@@ -39,10 +39,7 @@ describe 'Login', ->
         .then (models) ->
           internals.userModels = models # save user models
           Promise.map models, (e) -> e.save() # save models to db
-        .then(
-          -> done()
-          (err) -> done(err)
-        )
+        .then -> done()
 
   it 'login success', (done) ->
     user = internals.users[1]
