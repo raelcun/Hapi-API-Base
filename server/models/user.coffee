@@ -17,13 +17,12 @@ UserSchema = new mongoose.Schema
 UserSchema.statics.createNewUser = (username, plainPassword, scope = 'user') ->
   newUser = new this()
   return new Promise (resolve, reject) ->
-    bcrypt.genSalt 10, (err, salt) ->
-      bcrypt.hash plainPassword, salt, (err, hash) ->
-        if err then reject(err)
-        newUser.username = username
-        newUser.scope = scope
-        newUser.passwordHash = hash
-        resolve(newUser)
+    bcrypt.hash plainPassword, 10, (err, hash) ->
+      if err then reject(err)
+      newUser.username = username
+      newUser.scope = scope
+      newUser.passwordHash = hash
+      resolve(newUser)
 
 UserSchema.statics.validatePassword = (plainPassword, hashedPassword) ->
   return new Promise (resolve, reject) ->
