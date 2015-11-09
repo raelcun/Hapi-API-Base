@@ -5,6 +5,7 @@ expect = require('chai').expect
 Lab = require('lab')
 common = require('./common')
 jwt = require('jsonwebtoken')
+Promise = require('bluebird')
 
 # make unit tests look like BDD
 lab = exports.lab = Lab.script()
@@ -16,17 +17,32 @@ beforeEach = lab.beforeEach
 
 internals = {}
 internals.server = {}
+internals.userModel = {}
 internals.users = [
-  { username: 'admin', password: 'admin' }
-  { username: 'user', password: 'user' }
+  { username: 'admin', password: 'admin', scope: 'admin' }
+  { username: 'user', password: 'user', scope: 'user' }
 ]
+internals.userModels = []
 
 describe 'Login', ->
 
   before (done) ->
     common.serverPromise.then (res) ->
       internals.server = res
-      done()
+      internals.User = require('../models/user')
+
+      # remember that the promises used here are mongoose promises, not bluebird promises
+      # so, for example, there isn't a catch function
+      internals.User.remove({}).exec() # remove all users
+        .then -> # create all users
+          Promise.map internals.users, (e) -> internals.User.createNewUser(e.username, e.password, e.scope)
+        .then (models) ->
+          internals.userModels = models # save user models
+          Promise.map models, (e) -> e.save() # save models to db
+        .then(
+          -> done()
+          (err) -> done(err)
+        )
 
   it 'login success', (done) ->
     user = internals.users[1]

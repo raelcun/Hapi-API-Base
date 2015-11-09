@@ -6,6 +6,8 @@ logger = require('./components/logger')
 util = require('./components/util')
 boom = require('boom')
 jwt = require('jsonwebtoken')
+Promise = require('bluebird')
+mongoose = require('mongoose')
 
 # echo admin token for testing purposes
 logger.debug('admin token:', jwt.sign({ username: 'admin', scope: 'admin' }, config.API.JWTSecret, { algorithm: 'HS512' }))
@@ -34,33 +36,47 @@ server.ext 'onPreAuth', (request, reply) ->
       return reply(boom.unauthorized('Invalid token')) # ignore ip check unless in production
   reply.continue()
 
-server.register [
-  { register: require('hapi-auth-jwt2') }
-  { register: require('good'), options: config.goodOptions }
-  # {
-  #   register: require('hapi-mongodb')
-  #   options:
-  #     url: util.constructMongoURI.apply(config.mongo.connection)
-  #     settings: config.mongo.settings.server
-  # }
-], (err) ->
-  # setup authorization strategy
-  server.auth.strategy 'jwt', 'jwt', true, {
-    key: config.API.JWTSecret
-    verifyOptions:
-      algorithms: ['HS512']
-    validateFunc: (decoded, request, cb) ->
-      if decoded.username in ['user', 'admin']
-        return cb(null, true, decoded)
-      else
-        return cb(null, false, {})
-  }
-  server.auth.scope = ['admin', 'user']
+# gracefully disconnect from db when server is killed
+gracefulDBExit = ->
+  mongoose.connection.close ->
+    logger.warn 'Mongoose connection terminated due to app termination', {}, -> process.exit(0)
+process.on('SIGINT', gracefulDBExit).on('SIGTERM', gracefulDBExit)
 
-  # require all routes
-  require('./routes')(server)
+mongoose.connection.on 'disconnected', -> logger.info 'Mongoose default connection disconnected'
 
-  server.start ->
-    logger.info "web interface started at https://#{config.server.host}:#{config.server.port} in #{config.env} mode"
+mongoose.connection.on 'connected', ->
+  server.register [
+    { register: require('hapi-auth-jwt2') }
+    { register: require('good'), options: config.goodOptions }
+  ], (err) ->
+    # setup authorization strategy
+    server.auth.strategy 'jwt', 'jwt', true, {
+      key: config.API.JWTSecret
+      verifyOptions:
+        algorithms: ['HS512']
+      validateFunc: (decoded, request, cb) ->
+        if decoded.username in ['user', 'admin']
+          return cb(null, true, decoded)
+        else
+          return cb(null, false, {})
+    }
+    server.auth.scope = ['admin', 'user']
+
+    # require all routes
+    require('./routes')(server)
+
+    server.start ->
+      logger.info "web interface started at https://#{config.server.host}:#{config.server.port} in #{config.env} mode"
+
+mongoose.connect(
+  util.constructMongoURI(
+    config.mongo.connection.username
+    config.mongo.connection.password
+    config.mongo.connection.hostname
+    config.mongo.connection.port
+    config.mongo.connection.database
+  ),
+  config.mongo.settings
+)
 
 module.exports = server
