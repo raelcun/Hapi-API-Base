@@ -29,3 +29,5 @@ node_modules
 
 .vagrant
 server/**/*.js
+*.sublime-project
+*.sublime-workspace
