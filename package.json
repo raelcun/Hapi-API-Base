@@ -41,12 +41,14 @@
     "gulp": "^3.9.0",
     "gulp-coffee": "^2.3.1",
     "gulp-coffeelint": "^0.5.0",
+    "gulp-if": "^2.0.0",
     "gulp-lab": "^1.0.5",
     "gulp-nodemon": "^2.0.4",
     "gulp-rimraf": "^0.2.0",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-watch": "^4.3.5",
     "lab": "^7.1.0",
-    "streamqueue": "^1.1.1"
+    "streamqueue": "^1.1.1",
+    "yargs": "^3.29.0"
   }
 }

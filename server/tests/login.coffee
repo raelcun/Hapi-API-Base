@@ -17,7 +17,7 @@ beforeEach = lab.beforeEach
 
 internals = {}
 internals.server = {}
-internals.userModel = {}
+internals.User = {}
 internals.users = [
   { username: 'admin', password: 'admin', scope: 'admin' }
   { username: 'user', password: 'user', scope: 'user' }
@@ -35,10 +35,9 @@ describe 'Login', ->
       # so, for example, there isn't a catch function
       internals.User.remove({}).exec() # remove all users
         .then -> # create all users
-          Promise.map internals.users, (e) -> internals.User.createNewUser(e.username, e.password, e.scope)
+          Promise.map internals.users, (e) -> internals.User.saveNewUser(e.username, e.password, e.scope)
         .then (models) ->
           internals.userModels = models # save user models
-          Promise.map models, (e) -> e.save() # save models to db
         .then -> done()
 
   it 'login success', (done) ->
@@ -191,3 +190,13 @@ describe 'Login', ->
         payload = JSON.parse(res.payload)
         expect(payload.result).to.equal('user or admin')
         done()
+
+  it 'validateLogin bcrypt compare fails', (done) ->
+    internals.User.validateLogin('user', { 'password': 'password' })
+      .then(
+        null
+        (err) ->
+          expect(err.name).to.equal('Error')
+          expect(err.message).to.equal('data and hash must be strings')
+          done()
+      )

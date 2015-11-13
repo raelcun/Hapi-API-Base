@@ -9,6 +9,8 @@ var coffeelint = require('gulp-coffeelint');
 var watch = require('gulp-watch');
 var nodemon = require('gulp-nodemon');
 var lab = require('gulp-lab');
+var argv = require('yargs').argv;
+var gulpif = require('gulp-if');
 
 gulp.task('default', ['coffee'], function() {
   nodemon({
@@ -19,9 +21,14 @@ gulp.task('default', ['coffee'], function() {
   });
 });
 
-gulp.task('test', ['coffee'], function() {
+gulp.task('test:html', ['coffee'], function() {
   return gulp.src(['server/tests/*.js', '!server/tests/common.js'])
     .pipe(lab('-c -C -v --reporter html --output coverage'));
+});
+
+gulp.task('test', ['coffee'], function() {
+  return gulp.src(['server/tests/*.js', '!server/tests/common.js'])
+    .pipe(lab('-c -C -v'));
 });
 
 gulp.task('coffee', function() {
