@@ -28,7 +28,7 @@ gulp.task('test:html', ['coffee'], function() {
 
 gulp.task('test', ['coffee'], function() {
   return gulp.src(['server/tests/*.js', '!server/tests/common.js'])
-    .pipe(lab('-c -C -v'));
+    .pipe(lab('-c -C -v -S'));
 });
 
 gulp.task('coffee', function() {
