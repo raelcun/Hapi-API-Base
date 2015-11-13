@@ -1,5 +1,6 @@
 # turn code coverage off since this is part of the testing harness
 Promise = require('bluebird')
+require('mockgoose')(require('mongoose'))
 server = require('../app')
 expect = require('chai').expect
 

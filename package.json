@@ -48,6 +48,7 @@
     "gulp-sourcemaps": "^1.6.0",
     "gulp-watch": "^4.3.5",
     "lab": "^7.1.0",
+    "mockgoose": "^4.0.2",
     "streamqueue": "^1.1.1",
     "yargs": "^3.29.0"
   }
