@@ -9,8 +9,7 @@ var coffeelint = require('gulp-coffeelint');
 var watch = require('gulp-watch');
 var nodemon = require('gulp-nodemon');
 var lab = require('gulp-lab');
-var argv = require('yargs').argv;
-var gulpif = require('gulp-if');
+var coveralls = require('gulp-coveralls');
 
 gulp.task('default', ['coffee'], function() {
   nodemon({
@@ -27,8 +26,13 @@ gulp.task('test:html', ['coffee'], function() {
 });
 
 gulp.task('test', ['coffee'], function() {
-  return gulp.src(['server/tests/*.js', '!server/tests/common.js'])
-    .pipe(lab('-c -C -v -S'));
+  gulp.src(['server/tests/*.js', '!server/tests/common.js'])
+    .pipe(lab('-r lcov -o lcov.info'))
+});
+
+gulp.task('coveralls', function() {
+  gulp.src('lcov.info')
+    .pipe(coveralls());
 });
 
 gulp.task('coffee', function() {

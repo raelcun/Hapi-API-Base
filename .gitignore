@@ -31,3 +31,4 @@ node_modules
 server/**/*.js
 *.sublime-project
 *.sublime-workspace
+lcov.info

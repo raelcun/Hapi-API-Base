@@ -1,3 +1,8 @@
+[![Build Status](https://travis-ci.org/raelcun/Hapi-API-Base.svg?branch=master)](https://travis-ci.org/raelcun/Hapi-API-Base)
+[![Coverage Status](https://coveralls.io/repos/raelcun/Hapi-API-Base/badge.svg?branch=master&service=github)](https://coveralls.io/github/raelcun/Hapi-API-Base?branch=master)
+[![Dependency Status](https://david-dm.org/raelcun/hapi-api-base.svg)](https://david-dm.org/raelcun/hapi-api-base)
+[![DevDependency Status](https://david-dm.org/raelcun/hapi-api-base/dev-status.svg)](https://david-dm.org/raelcun/hapi-api-base#info=devDependencies)
+
 # Hapi API Base
 
 Hapi is a robust framework for rapidly buidling RESTful interfaces. This project is a great starting point for creating a RESTful API. The built-in features include:
