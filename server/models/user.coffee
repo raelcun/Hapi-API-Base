@@ -25,7 +25,6 @@ UserSchema.statics.validateLogin = (username, plainPassword) ->
           if err then reject(err)
           if res then resolve(docs[0].toJSON()) else resolve(null)
 
-
 UserSchema.statics.saveNewUser = (username, plainPassword, scope) ->
   self = this
   self
@@ -42,6 +41,11 @@ UserSchema.statics.saveNewUser = (username, plainPassword, scope) ->
           resolve(newUser)
     .then (newUser) ->
       newUser.save().then -> return newUser
+
+UserSchema.statics.deleteUser = (username) ->
+  this.findOneAndRemove({ username: username }).exec().then (record) ->
+    if record is null then throw boom.badRequest('Username does not exist')
+    return true
 
 UserSchema
   .path 'username'

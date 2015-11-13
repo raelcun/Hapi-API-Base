@@ -10,7 +10,18 @@ module.exports = [
       auth:
         strategy: 'jwt'
         scope: 'admin'
-      response: UserValidation.user.response
-      validate: UserValidation.user.validate
+      response: UserValidation.create.response
+      validate: UserValidation.create.validate
+  },
+  {
+    method: 'DELETE'
+    path: '/user/delete'
+    handler: UserCtrl.deleteUser
+    config:
+      auth:
+        strategy: 'jwt'
+        scope: 'admin'
+      response: UserValidation.delete.response
+      validate: UserValidation.delete.validate
   }
 ]

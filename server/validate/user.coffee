@@ -10,7 +10,18 @@ newUserResponse = Joi.alternatives().try(
   result: Joi.boolean()
 ).required()
 
+deleteRequest =
+  username: Joi.string().required()
+
+deleteResponse = Joi.alternatives().try(
+  boomSchema,
+  result: Joi.boolean()
+).required()
+
 module.exports =
-  user:
+  create:
     validate: payload: newUserRequest
     response: schema: newUserResponse
+  delete:
+    validate: payload: deleteRequest
+    response: schema: deleteResponse

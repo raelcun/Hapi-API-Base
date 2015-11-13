@@ -11,3 +11,13 @@ module.exports =
         (err) ->
           reply(boom.wrap(err))
       )
+
+  deleteUser: (request, reply) ->
+    UserModel
+      .deleteUser(request.payload.username)
+      .then(
+        (result) ->
+          reply({ result: result })
+        (err) ->
+          reply(boom.wrap(err))
+      )
