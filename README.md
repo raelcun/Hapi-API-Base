@@ -13,6 +13,7 @@ Hapi is a robust framework for rapidly buidling RESTful interfaces. This project
   * Add/Remove Users
 * SSL Enabled
 * Mongoose Models
+* Logging
 * Gulp for Building and Testing
 * Vagrant Box for Testing
 
@@ -36,10 +37,18 @@ The certificate provided is self signed and should only be used for testing purp
 
 [Mongoose](https://github.com/Automattic/mongoose) is a MongoDB ORM designed to provide a modeling and management layer on top of the basic Mongo driver. Mongoose was used because it works well for small projects, but is flexible enough to work on very large projects as well. Data accessor functions are provided as static functions defined on the user model. In my opinion, the controller should always go through an interface (sometimes called a DAO) such as the functions defined on the model to avoid directly querying the database. This makes it much easier to test and change if necessary.
 
+## Logging
+
+[Good](https://github.com/hapijs/good) is used as a plugin to Hapi to log internal events such as requests, responses, and errors to the console.
+
+[Winston](https://github.com/winstonjs/winston) is used to pipe all log output, with the exception of the Good logs, to a Mongo database as well as print out the logs to the console.
+
 ## Gulp for Building and Testing
+
 [Gulp](https://github.com/gulpjs/gulp) is an alternative to the popular Grunt build system that is focused on streams. The following commands can be used to control gulp:
 
 **Build the Project**
+
 ```shell
 gulp coffee
 ```

@@ -16,13 +16,19 @@ gulp.task('default', ['coffee'], function() {
     script: 'server/app.js',
     ext: 'coffee',
     watch: ['server'],
-    tasks: ['coffee']
+    tasks: ['coffee'],
+    env: { NODE_ENV: 'development' }
   });
 });
 
 gulp.task('test:html', ['coffee'], function() {
   return gulp.src(['server/tests/*.js', '!server/tests/common.js'])
     .pipe(lab('-c -C -v --reporter html --output coverage'));
+});
+
+gulp.task('test:console', ['coffee'], function() {
+  gulp.src(['server/tests/*.js', '!server/tests/common.js'])
+    .pipe(lab('-c -C -v -S'))
 });
 
 gulp.task('test', ['coffee'], function() {
