@@ -11,7 +11,18 @@ loginResponse = Joi.alternatives().try(
   result: Joi.string()
 ).required()
 
+refreshTokenRequest =
+  token: Joi.string().required()
+
+refreshTokenResponse = Joi.alternatives().try(
+  boomSchema,
+  result: Joi.string()
+).required()
+
 module.exports =
   login:
-    response: schema: loginResponse
     validate: payload: loginRequest
+    response: schema: loginResponse
+  refreshToken:
+    validate: payload: refreshTokenRequest
+    response: schema: refreshTokenResponse

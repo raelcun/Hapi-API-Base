@@ -200,3 +200,38 @@ describe 'Login', ->
           expect(err.message).to.equal('data and hash must be strings')
           done()
       )
+
+  it 'refresh token successfully', (done) ->
+    token = jwt.sign { username: internals.users[0].username }, config.API.JWTSecret, { expiresIn: 5 }
+    decodedOrg = jwt.decode(token)
+
+    options = { method: 'POST', url: '/refreshToken', payload: token: token }
+    internals.server.inject options, (res) ->
+      payload = JSON.parse(res.payload)
+      decoded = jwt.decode(payload.result)
+      expect(decoded.exp).to.be.above(decodedOrg.exp)
+      done()
+
+  it 'refresh token - invalid token', (done) ->
+    tokenPayload =
+      username: 'fakeUsername'
+      scope: 'admin'
+    fakeToken = jwt.sign(tokenPayload, 'not my secret', { expiresIn: config.API.defaultTokenExp, algorithm: 'HS512' })
+
+    options = { method: 'POST', url: '/refreshToken', payload: token: fakeToken }
+    internals.server.inject options, (res) ->
+      payload = JSON.parse(res.payload)
+      common.expectError(payload, 'Bad Request', 'Invalid token')
+      done()
+
+  it 'refresh token - expired token', (done) ->
+    tokenPayload =
+      username: 'fakeUsername'
+      scope: 'admin'
+    fakeToken = jwt.sign({ exp: Math.floor(Date.now() / 1000) - 500 }, config.API.JWTSecret, { algorithm: 'HS512' })
+
+    options = { method: 'POST', url: '/refreshToken', payload: token: fakeToken }
+    internals.server.inject options, (res) ->
+      payload = JSON.parse(res.payload)
+      common.expectError(payload, 'Bad Request', 'Invalid token')
+      done()

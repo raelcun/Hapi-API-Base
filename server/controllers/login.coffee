@@ -17,3 +17,9 @@ module.exports =
           host: request.info.host
         token = jwt.sign(tokenPayload, config.API.JWTSecret, { expiresIn: config.API.defaultTokenExp, algorithm: 'HS512' })
         return reply({ result: token })
+
+  refreshToken: (request, reply) ->
+    jwt.verify request.payload.token, config.API.JWTSecret, (err, decoded) ->
+      if err then return reply(boom.badRequest('Invalid token'))
+      token = jwt.sign decoded, config.API.JWTSecret, { expiresIn: config.API.defaultTokenExp, algorithm: 'HS512' }
+      return reply({ result: token })
