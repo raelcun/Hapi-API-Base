@@ -60,7 +60,7 @@ gulp
 
 **Run Tests, Outputting to the Command Line**
 ```shell
-gulp test
+gulp test:console
 ```
 
 **Run Tests, Outputting to HTML**
