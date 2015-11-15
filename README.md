@@ -5,7 +5,7 @@
 
 # Hapi API Base
 
-Hapi is a robust framework for rapidly buidling RESTful interfaces. This project is a great starting point for creating a RESTful API. The built-in features include:
+Hapi is a robust framework for rapidly buidling RESTful interfaces. This example project is a great starting point for creating a RESTful API. The built-in features include:
 * 100% Code Coverage
 * User Authentication
   * JWT Tokens
