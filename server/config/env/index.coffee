@@ -39,7 +39,7 @@ all =
       password: 'node'
       hostname: '192.168.33.10'
       port: 27017
-      database: 'inspire-me'
+      database: 'hapi-api'
     settings:
       server:
         socketOptions:
@@ -50,7 +50,7 @@ all =
       password: 'node'
       hostname: '192.168.33.10'
       port: 27017
-      database: 'inspire-me'
+      database: 'hapi-api'
       collection: 'logs'
 
 module.exports = _.merge({}, all, require("./#{process.env.NODE_ENV}.js"))

@@ -102,7 +102,7 @@ describe 'Login', ->
       options = { method: 'GET', url: '/user', headers: authorization: 'Bearer ' + token }
       internals.server.inject options, (res) ->
         payload = JSON.parse(res.payload)
-        common.expectError(payload, 'Forbidden', 'Insufficient scope, expected any of: user')
+        common.expectError(payload, 'Forbidden', 'Insufficient scope')
         done()
 
   it 'signed token with invalid login credentials', (done) ->

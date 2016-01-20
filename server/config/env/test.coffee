@@ -14,6 +14,6 @@ module.exports =
 
   mongo:
     connection:
-      database: 'inspire-me-test'
+      database: 'hapi-api-test'
     logDB:
-      database: 'inspire-me-test'
+      database: 'hapi-api-test'
